@@ -4,10 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const cart = JSON.parse(localStorage.getItem('cart'))
 
     //FONCTION AFFICHAGE DU PANIER
-    cart.forEach(productCart => {
-        const key = Object.values(localStorage).find(canap => JSON.parse(canap)._id == productCart.id)
-        createCart(JSON.parse(key), productCart)
-    })
+    if (cart)
+    {
+        cart.forEach(productCart => {
+            const key = Object.values(localStorage).find(canap => JSON.parse(canap)._id == productCart.id)
+            createCart(JSON.parse(key), productCart)
+        })
+    }
 
     //RECUPERATION DE QUANTITE
     const select = document.querySelectorAll('.itemQuantity')
@@ -106,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return
             }
         })
-    //REMPLISSAGE AUTO FORMULAIRE
+    // REMPLISSAGE AUTO FORMULAIRE
     const formLocalStorage = JSON.parse(localStorage.getItem("formulaire"))
     for (const eleForm in formLocalStorage) {
         document.querySelector(`#${eleForm}`).value = formLocalStorage[eleForm];
@@ -167,4 +170,5 @@ function displayOrderID()
     const orderID = params.get('id')
     
     document.getElementById('orderId').innerHTML = '<br>' + orderID
+    localStorage.removeItem('cart')
 }
