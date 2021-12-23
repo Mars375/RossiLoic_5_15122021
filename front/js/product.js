@@ -26,10 +26,9 @@ function addOption(canape) {
     const colors = document.getElementById('colors')
 
     canape.colors.forEach (option => {
-
         const newOption = document.createElement('option')
         const newContent = document.createTextNode(option)
-
+        newOption.value = option
         newOption.appendChild(newContent)
         colors.appendChild(newOption)
     })
@@ -38,7 +37,7 @@ function addOption(canape) {
 //AJOUT IMAGE
 function addImg(canape) {
 
-    const image = document.querySelector(".item__img")    
+    const image = document.querySelector('.item__img')    
     const newImg = document.createElement('img')
     
     newImg.src = canape.imageUrl
@@ -60,9 +59,10 @@ function addCart() {
         //VERIFICATION QUANTITE > 100
         if (findCanap.quantity + +canapQuantity > 100) {
             alert('Quantité maximale de 100 pièces par produit')
+            return
         }
         else {
-            findCanap.quantity += +canapQuantity
+            findCanap.quantity += +canapQuantity 
         }
     }
     else {

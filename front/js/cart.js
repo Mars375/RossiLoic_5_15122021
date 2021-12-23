@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         productQuantity.addEventListener('change', () => {
             if (productQuantity.value > 100 || productQuantity.value <= 0) return alert('Veuillez choisir une quantité entre 1 et 100')
             const canap = cart.find(canap => canap.id == data_id && canap.color == data_color)
-            canap.quantity = productQuantity.value
+            canap.quantity = +productQuantity.value
             localStorage.setItem('cart', JSON.stringify(cart))
             total(cart)
         })
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('lastNameErrorMsg').innerHTML = 'Veuillez ne saisir que des caractères alphabétiques'
                 test = false
             }
-            if (!(e.target.address.value).match(/([0-9]*) ?([a-zA-Z,\. ]*) ?([0-9]{5}) ?([a-zA-Z]*)/)){
+            if (!(e.target.address.value).match(/([0-9]*) ?([a-zA-Z,\. ]*) ?([0-9] {5})/)){
                 document.getElementById('addressErrorMsg').innerHTML = 'Veuillez respecter le format adresse : 3 boulevard du Levant 95220'
                 test = false
             }
@@ -84,29 +84,28 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (test == true) {
                 localStorage.setItem("formulaire", JSON.stringify(storageForm))
-            }
-                            
-            //ENVOI DES DONNEES
-            const products = []
-            for (const item of cart){products.push(item.id)}
-            const settings = {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    products,
-                    contact : storageForm
-                })
-            }
-            try {
-                const fetchResponse = await fetch('http://localhost:3000/api/products/order', settings)
-                const data = await fetchResponse.json()
-                location.href=`./confirmation.html?id=${data.orderId}`
-            }
-            catch {
-                return
+                //ENVOI DES DONNEES
+                const products = []
+                for (const item of cart){products.push(item.id)}
+                const settings = {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        products,
+                        contact : storageForm
+                    })
+                }
+                try {
+                    const fetchResponse = await fetch('http://localhost:3000/api/products/order', settings)
+                    const data = await fetchResponse.json()
+                    location.href=`./confirmation.html?id=${data.orderId}`
+                }
+                catch {
+                    return
+                }
             }
         })
     // REMPLISSAGE AUTO FORMULAIRE
@@ -154,6 +153,7 @@ function total(cart) {
     var totalArticle = 0
     var totalPrice = 0
     for (const i of cart) {
+        console.log(typeof i.quantity);
         totalArticle += +i.quantity
         totalPrice += +i.price * +i.quantity
     }
