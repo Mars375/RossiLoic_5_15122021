@@ -67,10 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 test = false
             }
             if (!(e.target.lastName.value).match(/^[A-zÀ-ú' -]*$/)){
+                console.log(e.target.lastName.value);
                 document.getElementById('lastNameErrorMsg').innerHTML = 'Veuillez ne saisir que des caractères alphabétiques'
                 test = false
             }
-            if (!(e.target.address.value).match(/([0-9]*) ?([a-zA-Z,\. ]*) ?([0-9] {5})/)){
+            if (!(e.target.address.value).match(/^([0-9]*) ?([a-zA-Z,\. ]*) ?([0-9]{5})$/)){
                 document.getElementById('addressErrorMsg').innerHTML = 'Veuillez respecter le format adresse : 3 boulevard du Levant 95220'
                 test = false
             }
@@ -153,7 +154,6 @@ function total(cart) {
     var totalArticle = 0
     var totalPrice = 0
     for (const i of cart) {
-        console.log(typeof i.quantity);
         totalArticle += +i.quantity
         totalPrice += +i.price * +i.quantity
     }
