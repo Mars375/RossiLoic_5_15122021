@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // boucle foreach parcours tous les produits de la liste
       productArray.forEach(product => {
         createKanap(product)
-        localStorage.setItem(product._id, JSON.stringify(product))
       })
     })
     .catch(err => {
