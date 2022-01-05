@@ -3,17 +3,18 @@ const params = (new URL(document.location)).searchParams
 const canapID = params.get('id'); // on récupère l'id du canapé
 
 //EXECUTION DE MES FONCTIONS
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
 //RECUPERATION DU CANAPE
-    const canape = JSON.parse(localStorage.getItem(canapID))
+    const response = await fetch('http://localhost:3000/api/products/' +canapID)
+    const data = await response.json()    
 
 //AJOUT INFOS CANAPE
-    document.getElementById('title').innerHTML = canape.name
-    document.getElementById('price').innerHTML = canape.price
-    document.getElementById('description').innerHTML = canape.description
-    addOption(canape)
-    addImg(canape)
+    document.getElementById('title').innerHTML = data.name
+    document.getElementById('price').innerHTML = data.price
+    document.getElementById('description').innerHTML = data.description
+    addOption(data)
+    addImg(data)
 
 //AJOUT AU PANIER
     var click = document.getElementById("addToCart");
@@ -21,11 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 //AJOUTS DES OPTIONS DE COULEURS
-function addOption(canape) {
+function addOption(data) {
 
     const colors = document.getElementById('colors')
 
-    canape.colors.forEach (option => {
+    data.colors.forEach (option => {
         const newOption = document.createElement('option')
         const newContent = document.createTextNode(option)
         newOption.value = option
@@ -35,12 +36,12 @@ function addOption(canape) {
 }
 
 //AJOUT IMAGE
-function addImg(canape) {
+function addImg(data) {
 
     const image = document.querySelector('.item__img')    
     const newImg = document.createElement('img')
     
-    newImg.src = canape.imageUrl
+    newImg.src = data.imageUrl
     image.appendChild(newImg)
 }
 

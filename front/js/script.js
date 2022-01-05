@@ -16,7 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(product._id, JSON.stringify(product))
       })
     })
-    .catch(err => console.error(err))
+    .catch(err => {
+      console.error(err)
+      items.setAttribute("style", "color:red")
+      items.innerHTML +=`
+        <h3 class="productName">Une erreur est survenue</h3>
+      `
+      return
+    })
 
 //  FONCTION AFFICHAGE HTML
   function createKanap(canape) {

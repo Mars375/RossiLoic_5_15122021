@@ -2,14 +2,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     //RECUPERATION  DES DONNEES LOCALES
     const cart = JSON.parse(localStorage.getItem('cart'))
+    const cart__items = document.getElementById('cart__items')
 
     //FONCTION AFFICHAGE DU PANIER
     if (cart)
     {
         cart.forEach(productCart => {
             const key = Object.values(localStorage).find(canap => JSON.parse(canap)._id == productCart.id)
-            createCart(JSON.parse(key), productCart)
+            createCart(JSON.parse(key), productCart, cart__items)
         })
+    }
+    if (location.href.includes('cart') && !cart)
+    {
+        cart__items.innerHTML +=`
+            <h2 style="text-align:center">Votre panier est vide !</h2>`
     }
 
     //RECUPERATION DE QUANTITE
@@ -39,11 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const data_color = ele.dataset.color
 
         productDelete.addEventListener('click', () => {
-            ele.parentNode.removeChild(ele)
-            cart.splice(cart.indexOf(cart.find(canape => canape.id === data_id && canape.color === data_color)), 1)
-            localStorage.setItem('cart', JSON.stringify(cart))
-            alert('Le produit a été retiré du panier')
-            window.location.reload()
+            if (confirm('Êtes vous sur de vouloir supprimer cet élément ?')){
+                ele.parentNode.removeChild(ele)
+                cart.splice(cart.indexOf(cart.find(canape => canape.id === data_id && canape.color === data_color)), 1)
+                localStorage.setItem('cart', JSON.stringify(cart))
+                alert('Le produit a été retiré du panier')
+                window.location.reload()
+            }
         })
     })
 
@@ -71,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('lastNameErrorMsg').innerHTML = 'Veuillez ne saisir que des caractères alphabétiques'
                 test = false
             }
-            if (!(e.target.address.value).match(/^([0-9]*) ?([a-zA-Z,\. ]*) ?([0-9]{5})$/)){
+            if (!(e.target.address.value).match(/^[0-9A-zÀ-ú' -]*$/)){
                 document.getElementById('addressErrorMsg').innerHTML = 'Veuillez respecter le format adresse : 3 boulevard du Levant 95220'
                 test = false
             }
@@ -83,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('emailErrorMsg').innerHTML = 'Veuillez respecter le format email : johnDoe@gmail.com'
                 test = false
             }
+            if(!cart) return alert('Veuillez mettre des produits dans votre panier avant de commander !')
             if (test == true) {
                 localStorage.setItem("formulaire", JSON.stringify(storageForm))
                 //ENVOI DES DONNEES
@@ -103,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const fetchResponse = await fetch('http://localhost:3000/api/products/order', settings)
                     const data = await fetchResponse.json()
                     location.href=`./confirmation.html?id=${data.orderId}`
+                    localStorage.removeItem('cart')
                 }
                 catch {
                     return
@@ -121,9 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 //FONCTION AFFICHAGE PRODUIT
-function createCart(canape, productCart) {
+function createCart(canape, productCart, cart__items) {
     //RECUPERATION DE ID ITEMS DE HTML
-    const cart__items = document.getElementById('cart__items')
     if(!cart__items) return
     cart__items.innerHTML +=`
         <article class="cart__item" data-id="${canape._id}" data-color="${productCart.color}">
@@ -170,5 +179,4 @@ function displayOrderID()
     const orderID = params.get('id')
     
     document.getElementById('orderId').innerHTML = '<br>' + orderID
-    localStorage.removeItem('cart')
 }
