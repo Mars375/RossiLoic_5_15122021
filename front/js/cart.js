@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             createCart(key, productCart, cart__items)
         })
     }
-    if (location.href.includes('cart') && !cart)
+    if (location.href.includes('cart') && (!cart || !cart.length))
     {
         cart__items.innerHTML +=`
             <h2 style="text-align:center">Votre panier est vide !</h2>`
@@ -77,7 +77,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 test = false
             }
             if (!(e.target.lastName.value).match(/^[A-zÀ-ú' -]*$/)){
-                console.log(e.target.lastName.value);
                 document.getElementById('lastNameErrorMsg').innerHTML = 'Veuillez ne saisir que des caractères alphabétiques'
                 test = false
             }
@@ -93,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('emailErrorMsg').innerHTML = 'Veuillez respecter le format email : johnDoe@gmail.com'
                 test = false
             }
-            if(!cart) return alert('Veuillez mettre des produits dans votre panier avant de commander !')
+            if(!cart || !cart.length) return alert('Veuillez mettre des produits dans votre panier avant de commander !')
             if (test == true) {
                 localStorage.setItem("formulaire", JSON.stringify(storageForm))
                 //ENVOI DES DONNEES
@@ -112,9 +111,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 try {
                     const fetchResponse = await fetch('http://localhost:3000/api/products/order', settings)
+                    localStorage.removeItem('cart')
                     const data = await fetchResponse.json()
                     location.href=`./confirmation.html?id=${data.orderId}`
-                    localStorage.removeItem('cart')
                 }
                 catch {
                     return
