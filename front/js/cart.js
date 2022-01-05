@@ -1,15 +1,17 @@
 //EXECUTION DE MES FONCTIONS
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     //RECUPERATION  DES DONNEES LOCALES
     const cart = JSON.parse(localStorage.getItem('cart'))
     const cart__items = document.getElementById('cart__items')
 
     //FONCTION AFFICHAGE DU PANIER
+    const response = await fetch('http://localhost:3000/api/products/')
+    const data = await response.json()   
     if (cart)
     {
         cart.forEach(productCart => {
-            const key = Object.values(localStorage).find(canap => JSON.parse(canap)._id == productCart.id)
-            createCart(JSON.parse(key), productCart, cart__items)
+            const key = Object.values(data).find(canap => canap._id == productCart.id)
+            createCart(key, productCart, cart__items)
         })
     }
     if (location.href.includes('cart') && !cart)
